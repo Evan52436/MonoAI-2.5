@@ -1,2 +1,2 @@
-# MonoAI-2.5
-Versi lanjutan cui
+# MonoAI
+MonoAI Gen1
