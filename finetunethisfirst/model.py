@@ -3,6 +3,9 @@ Chatbot Finetuning Script
 This script finetunes a GPT-2 model on instruction data for chatbot purposes
 """
 
+# Install required packages first:
+# pip install transformers datasets torch accelerate peft bitsandbytes
+
 import torch
 from datasets import load_dataset
 from transformers import (
@@ -28,8 +31,9 @@ BATCH_SIZE = 4
 LEARNING_RATE = 2e-4
 NUM_EPOCHS = 3
 
-#LOAD AND PREPARE DATASET
-
+# ========================================
+# STEP 1: LOAD AND PREPARE DATASET
+# ========================================
 print("Loading dataset...")
 dataset = load_dataset(DATASET_NAME, split="train[:5000]")  # Using 5k samples for speed
 
@@ -58,9 +62,9 @@ eval_dataset = dataset["test"]
 print(f"Training samples: {len(train_dataset)}")
 print(f"Validation samples: {len(eval_dataset)}")
 
-
-#LOAD MODEL AND TOKENIZER
-
+# ========================================
+# STEP 2: LOAD MODEL AND TOKENIZER
+# ========================================
 print(f"\nLoading model: {MODEL_NAME}")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 tokenizer.pad_token = tokenizer.eos_token
@@ -123,8 +127,8 @@ training_args = TrainingArguments(
     warmup_steps=100,
     logging_steps=50,
     eval_steps=200,
-    save_steps=500,
-    evaluation_strategy="steps",
+    save_steps=200,  # Changed to match eval_steps
+    eval_strategy="steps",
     save_strategy="steps",
     load_best_model_at_end=True,
     report_to="none",  # Disable wandb/tensorboard
