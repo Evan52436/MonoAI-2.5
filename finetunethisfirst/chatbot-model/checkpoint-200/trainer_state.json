@@ -1,7 +1,7 @@
 {
   "best_global_step": 200,
-  "best_metric": 2.4036314487457275,
-  "best_model_checkpoint": "./chatbot-model\\checkpoint-200",
+  "best_metric": 2.347019672393799,
+  "best_model_checkpoint": "./chatbot-model/checkpoint-200",
   "epoch": 0.17777777777777778,
   "eval_steps": 200,
   "global_step": 200,
@@ -11,38 +11,38 @@
   "log_history": [
     {
       "epoch": 0.044444444444444446,
-      "grad_norm": 0.7880196571350098,
+      "grad_norm": 0.6265060305595398,
       "learning_rate": 9.8e-05,
-      "loss": 3.3573,
+      "loss": 3.2352,
       "step": 50
     },
     {
       "epoch": 0.08888888888888889,
-      "grad_norm": 1.529316782951355,
+      "grad_norm": 0.9579806327819824,
       "learning_rate": 0.00019800000000000002,
-      "loss": 2.9459,
+      "loss": 2.8442,
       "step": 100
     },
     {
       "epoch": 0.13333333333333333,
-      "grad_norm": 1.025962471961975,
+      "grad_norm": 1.0099622011184692,
       "learning_rate": 0.00019700763358778626,
-      "loss": 2.6185,
+      "loss": 2.6893,
       "step": 150
     },
     {
       "epoch": 0.17777777777777778,
-      "grad_norm": 1.193070650100708,
+      "grad_norm": 0.8113100528717041,
       "learning_rate": 0.00019395419847328244,
-      "loss": 2.5205,
+      "loss": 2.474,
       "step": 200
     },
     {
       "epoch": 0.17777777777777778,
-      "eval_loss": 2.4036314487457275,
-      "eval_runtime": 336.9553,
-      "eval_samples_per_second": 1.484,
-      "eval_steps_per_second": 0.371,
+      "eval_loss": 2.347019672393799,
+      "eval_runtime": 5.5269,
+      "eval_samples_per_second": 90.467,
+      "eval_steps_per_second": 22.617,
       "step": 200
     }
   ],
