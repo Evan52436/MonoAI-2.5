@@ -18,23 +18,32 @@ CORS(app)  # Enable CORS for static website access
 # ========================================
 # CONFIGURATION
 # ========================================
-MODEL_PATH = "./chatbot-model"  # Path to your finetuned model
-BASE_MODEL = "gpt2"  # Same base model used for finetuning
+MODEL_PATH = "MonoAI-2.5/finetunethisfirst/chatbot-model"  # Path to your finetuned model
+BASE_MODEL = "gpt2"  # Changed to match the finetuning script
 
 # ========================================
 # LOAD MODEL AT STARTUP
 # ========================================
 print("Loading model...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+
+# Load tokenizer from base model (not from adapter path)
+tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
 tokenizer.pad_token = tokenizer.eos_token
 
+# Load base model
 base_model = AutoModelForCausalLM.from_pretrained(
     BASE_MODEL,
     torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
     device_map="auto" if torch.cuda.is_available() else None
 )
 
-model = PeftModel.from_pretrained(base_model, MODEL_PATH)
+# Load the finetuned LoRA adapter
+# Use absolute path to avoid path issues
+import os
+model_path = os.path.abspath(MODEL_PATH)
+print(f"Loading adapter from: {model_path}")
+
+model = PeftModel.from_pretrained(base_model, model_path)
 model.eval()
 
 print("✅ Model loaded successfully!")
