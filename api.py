@@ -18,7 +18,7 @@ CORS(app)  # Enable CORS for static website access
 # ========================================
 # CONFIGURATION
 # ========================================
-MODEL_PATH = "MonoAI-2.5/finetunethisfirst/chatbot-model"  # Path to your finetuned model
+MODEL_PATH = "/home/dhiren/Desktop/vscode/MonoAI-2.5/finetunethisfirst/chatbot-model"  # Path to your finetuned model
 BASE_MODEL = "gpt2"  # Changed to match the finetuning script
 
 # ========================================
@@ -26,7 +26,28 @@ BASE_MODEL = "gpt2"  # Changed to match the finetuning script
 # ========================================
 print("Loading model...")
 
-# Load tokenizer from base model (not from adapter path)
+# Check if model exists
+import os
+model_path = os.path.abspath(MODEL_PATH)
+adapter_config_path = os.path.join(model_path, "adapter_config.json")
+
+if not os.path.exists(model_path):
+    print(f"❌ ERROR: Model directory not found: {model_path}")
+    print("Please run the finetuning script first: python model.py")
+    exit(1)
+
+if not os.path.exists(adapter_config_path):
+    print(f"❌ ERROR: adapter_config.json not found in: {model_path}")
+    print("The model may not have been saved correctly during training.")
+    print("\nFiles in model directory:")
+    if os.path.exists(model_path):
+        for f in os.listdir(model_path):
+            print(f"  - {f}")
+    exit(1)
+
+print(f"✓ Model directory found: {model_path}")
+
+# Load tokenizer from base model
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
 tokenizer.pad_token = tokenizer.eos_token
 
@@ -38,12 +59,24 @@ base_model = AutoModelForCausalLM.from_pretrained(
 )
 
 # Load the finetuned LoRA adapter
-# Use absolute path to avoid path issues
-import os
-model_path = os.path.abspath(MODEL_PATH)
 print(f"Loading adapter from: {model_path}")
 
-model = PeftModel.from_pretrained(base_model, model_path)
+# Try loading with local_files_only to avoid HuggingFace Hub validation
+try:
+    model = PeftModel.from_pretrained(
+        base_model, 
+        model_path,
+        local_files_only=True,
+        is_trainable=False
+    )
+except Exception as e:
+    print(f"Error loading with local_files_only: {e}")
+    print("Trying alternative method...")
+    # Alternative: Load config first, then model
+    from peft import PeftConfig
+    config = PeftConfig.from_pretrained(model_path)
+    model = PeftModel.from_pretrained(base_model, model_path)
+
 model.eval()
 
 print("✅ Model loaded successfully!")
